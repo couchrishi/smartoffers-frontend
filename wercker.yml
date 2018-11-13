@@ -47,7 +47,7 @@ deploy:
       - script:
           name: echo tags
           code: |
-            cat $WERCKER_ROOT/kubernetes/tweetnode-deployment.yaml
+            cat $WERCKER_ROOT/kubernetes/smartoffers-frontend-deployment.yaml
             echo "Docker image and tag:"
             echo "${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}"
             
