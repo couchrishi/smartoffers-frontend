@@ -1,0 +1,73 @@
+box:
+ id: node:boron
+dev:
+  steps:
+    - npm-install
+    - internal/watch:
+        code: node server.js
+        reload: true
+
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    - script:
+        code: export NODE_ENV='testing'
+    # A step that executes `npm install` command
+    - npm-install
+    # A step that executes `npm test` command
+    #- npm-test
+
+    # A custom script step, name value is used in the UI
+    # and the code value contains the command that get executed
+    - script:
+        name: echo nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "npm version $(npm -v) running"
+docker-build:
+  # Step to build and push docker image
+  steps:
+   - internal/docker-build:
+       dockerfile: Dockerfile
+       image-name: $APP_NAME
+   - internal/docker-push:
+         image-name: $APP_NAME
+         username: $CONTAINER_REGISTRY_USERNAME
+         password: $API_USER_TOKEN
+         repository: $TENANCY_NAME/$REPO_NAME/$APP_NAME
+         registry: $PRIVATE_REGISTRY_PATH 
+         tag: ${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT},latest
+
+deploy:
+  steps:
+      - bash-template:
+          cwd: $WERCKER_ROOT/kubernetes/
+        
+      - script:
+          name: echo tags
+          code: |
+            cat $WERCKER_ROOT/kubernetes/tweetnode-deployment.yaml
+            echo "Docker image and tag:"
+            echo "${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}"
+            
+      - kubectl:
+         server: $KUBE_ENDPOINT
+         token: $KUBE_USER_TOKEN
+         insecure-skip-tls-verify: true
+         cwd: $WERCKER_ROOT/kubernetes/
+         command: delete secret $OCIR_SECRET_NAME
+
+      - kubectl:
+         server: $KUBE_ENDPOINT
+         token: $KUBE_USER_TOKEN
+         insecure-skip-tls-verify: true
+         cwd: $WERCKER_ROOT/kubernetes/
+         command: create secret docker-registry $OCIR_SECRET_NAME --docker-server='${PRIVATE_REGISTRY_PATH}' --docker-username=$CONTAINER_REGISTRY_USERNAME --docker-password='${API_USER_TOKEN}' --docker-email='saibalaji.rajaraman@outlook.com' 
+
+      - kubectl:
+         server: $KUBE_ENDPOINT
+         token: $KUBE_USER_TOKEN
+         insecure-skip-tls-verify: true
+         cwd: $WERCKER_ROOT/kubernetes/
+         command: apply -f .

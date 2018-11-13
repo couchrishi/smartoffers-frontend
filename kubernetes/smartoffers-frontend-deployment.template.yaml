@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: smartoffers-frontend-deployment
+  labels:
+    app: smartoffers-frontend
+spec:
+  template:
+    metadata:
+      labels:
+        app: smartoffers-frontend
+        env: prod
+        tier: web
+    spec:
+      imagePullSecrets:
+      - name: $OCIR_SECRET_NAME
+      containers:
+      - name: smartoffers-frontend
+        image: $PRIVATE_REGISTRY_PATH/$TENANCY_NAME/$REPO_NAME/$APP_NAME:${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8182

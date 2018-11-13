@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartoffers-frontend-svc
+  labels:
+    app: smartoffers-frontend
+spec:
+  selector:
+    app: smartoffers-frontend
+    tier: web
+    env: prod
+  ports:
+  - port: 8182
+    targetPort: 8119
+  type: NodePort
