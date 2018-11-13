@@ -7,6 +7,13 @@ dev:
         code: node server.js
         reload: true
 
+  after-steps:
+    - install-packages:
+        packages: ruby
+    - pasonatquila/pretty-slack-notify@0.3.6:
+        webhook_url: $SLACK_URL
+        channel: $SLACK_CHANNEL
+
 # Build definition
 build:
   # The steps that will be executed on build
@@ -25,6 +32,13 @@ build:
         code: |
           echo "node version $(node -v) running"
           echo "npm version $(npm -v) running"
+  after-steps:
+    - install-packages:
+        packages: ruby
+    - pasonatquila/pretty-slack-notify@0.3.6:
+        webhook_url: $SLACK_URL
+        channel: $SLACK_CHANNEL
+  
 docker-build:
   # Step to build and push docker image
   steps:
@@ -39,6 +53,12 @@ docker-build:
          registry: $PRIVATE_REGISTRY_PATH 
          tag: ${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT},latest
 
+  after-steps:
+    - install-packages:
+        packages: ruby
+    - pasonatquila/pretty-slack-notify@0.3.6:
+        webhook_url: $SLACK_URL
+        channel: $SLACK_CHANNEL
 deploy:
   steps:
       - bash-template:
@@ -71,3 +91,10 @@ deploy:
          insecure-skip-tls-verify: true
          cwd: $WERCKER_ROOT/kubernetes/
          command: apply -f .
+
+  after-steps:
+    - install-packages:
+        packages: ruby
+    - pasonatquila/pretty-slack-notify@0.3.6:
+        webhook_url: $SLACK_URL
+        channel: $SLACK_CHANNEL       
