@@ -8,7 +8,7 @@ spec:
   template: 
     metadata: 
       labels: 
-        k8s-app: nginx-ingress-lb
+        k8s-app: nginx-ingress-controller
     spec: 
       containers: 
         - args: 
@@ -64,4 +64,4 @@ spec:
     port: 443
     targetPort: https
   selector:
-    k8s-app: nginx-ingress-lb
+    k8s-app: nginx-ingress-controller
