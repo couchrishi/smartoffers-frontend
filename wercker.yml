@@ -67,7 +67,7 @@ deploy:
       - script:
           name: echo tags
           code: |
-            cat $WERCKER_ROOT/kubernetes/smartoffers-frontend-deployment.yaml
+            cat $WERCKER_ROOT/kubernetes/smartoffers-frontend-ingress.yaml
             echo "Docker image and tag:"
             echo "${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}"
             
