@@ -54,7 +54,6 @@ spec:
             timeoutSeconds: 1
 
 ---
-
 kind: Service
 apiVersion: v1
 metadata:
