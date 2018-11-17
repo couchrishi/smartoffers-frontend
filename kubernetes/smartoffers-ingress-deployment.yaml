@@ -68,7 +68,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: ingress-nginx
+    app: nginx-ingress-controller
   ports:
   - name: http
     port: 80
