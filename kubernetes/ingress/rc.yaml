@@ -16,13 +16,6 @@ spec:
       - image: gcr.io/google_containers/nginx-ingress-controller:0.8.3
         name: nginx-ingress-controller
         imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 10253 #10249
-            scheme: HTTP
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
         env:
           - name: POD_NAME
             valueFrom:
