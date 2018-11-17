@@ -27,7 +27,7 @@ spec:
                 fieldPath: metadata.namespace
         ports:
         # service for tcp-configmap-activemq on port 61616
-        # - containerPort: 61616
+          - containerPort: 81
         #   hostPort: 61616
         args:
         - /nginx-ingress-controller
