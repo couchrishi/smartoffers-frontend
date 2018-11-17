@@ -37,4 +37,5 @@ spec:
   ports:
   - port: 8182
     targetPort: 8119
+  type: ClusterIP
 
