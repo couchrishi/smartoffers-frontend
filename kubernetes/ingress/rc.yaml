@@ -38,6 +38,6 @@ spec:
         #   hostPort: 61616
         args:
         - /nginx-ingress-controller
-        - --default-backend-service=$(POD_NAMESPACE)/ingress-default-backend
+        - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
         - --nginx-configmap=$(POD_NAMESPACE)/nginx-load-balancer-conf
         - --healthz-port=10253
