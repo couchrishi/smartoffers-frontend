@@ -109,7 +109,7 @@ deploy:
          server: $KUBE_ENDPOINT
          token: $KUBE_USER_TOKEN
          insecure-skip-tls-verify: true
-         cwd: $WERCKER_ROOT/kubernetes/
+         cwd: $WERCKER_ROOT/kubernetes/deployment
          command: apply -f .
 
   after-steps:
