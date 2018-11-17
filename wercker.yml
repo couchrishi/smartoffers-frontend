@@ -70,6 +70,14 @@ deploy:
             cat $WERCKER_ROOT/kubernetes/smartoffers-frontend-ingress.yaml
             echo "Docker image and tag:"
             echo "${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}"
+
+      - script:
+          name: echo pod info
+          code: |
+            cat $WERCKER_ROOT/kubernetes/smartoffers-ingress-deployment.yaml
+            echo "Pod namespace and name:"
+            echo $POD_NAMESPACE
+            echo $POD_NAME
             
       - kubectl:
          server: $KUBE_ENDPOINT
