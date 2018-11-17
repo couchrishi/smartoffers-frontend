@@ -1,62 +1,74 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
-metadata: 
+metadata:
   name: nginx-ingress-controller
   namespace: default
-spec: 
+spec:
   replicas: 1
-  revisionHistoryLimit: 3
-  template: 
-    metadata: 
-      labels: 
-        k8s-app: nginx-ingress-controller
-    spec: 
-      containers: 
-        - args: 
+  selector:
+    matchLabels:
+      app: nginx-ingress-controller
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress-controller
+      annotations:
+        prometheus.io/port: '10254'
+        prometheus.io/scrape: 'true'
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.9.0-beta.17
+          args:
             - /nginx-ingress-controller
-            - "--default-backend-service=$(POD_NAMESPACE)/default-http-backend"
-            - "--default-ssl-certificate=$(POD_NAMESPACE)/tls-certificate"
-          env: 
+            - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
+          env:
             - name: POD_NAME
-              valueFrom: 
-                fieldRef: 
+              valueFrom:
+                fieldRef:
                   fieldPath: metadata.name
             - name: POD_NAMESPACE
-              valueFrom: 
-                fieldRef: 
+              valueFrom:
+                fieldRef:
                   fieldPath: metadata.namespace
-          image: "gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.5"
-          imagePullPolicy: Always
-          livenessProbe: 
-            httpGet: 
+          ports:
+          - name: http
+            containerPort: 80
+          - name: https
+            containerPort: 443
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
               path: /healthz
               port: 10254
               scheme: HTTP
             initialDelaySeconds: 10
-            timeoutSeconds: 5
-          name: nginx-ingress-controller
-          ports: 
-            - containerPort: 80
-              name: http
-              protocol: TCP
-            - containerPort: 443
-              name: https
-              protocol: TCP
-          volumeMounts: 
-            - mountPath: /etc/nginx-ssl/dhparam
-              name: tls-dhparam-vol
-      terminationGracePeriodSeconds: 60
-      volumes: 
-        - name: tls-dhparam-vol
-          secret: 
-            secretName: tls-dhparam
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+
 ---
-apiVersion: v1
+
 kind: Service
+apiVersion: v1
 metadata:
   name: nginx-ingress-controller
+  namespace: default
+  labels:
+    app: nginx-ingress-controller
 spec:
   type: LoadBalancer
+  selector:
+    app: ingress-nginx
   ports:
   - name: http
     port: 80
@@ -64,5 +76,3 @@ spec:
   - name: https
     port: 443
     targetPort: https
-  selector:
-    k8s-app: nginx-ingress-controller
