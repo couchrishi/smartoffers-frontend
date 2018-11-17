@@ -112,6 +112,13 @@ deploy:
          cwd: $WERCKER_ROOT/kubernetes/deployment
          command: apply -f .
 
+      - kubectl:
+         server: $KUBE_ENDPOINT
+         token: $KUBE_USER_TOKEN
+         insecure-skip-tls-verify: true
+         cwd: $WERCKER_ROOT/kubernetes/ingress
+         command: apply -f .
+
   after-steps:
     - install-packages:
         packages: ruby
