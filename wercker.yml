@@ -87,7 +87,7 @@ deploy:
       - script:
           name: echo tags
           code: |
-            cat $WERCKER_ROOT/kubernetes/deployment/deployment.template.yaml
+            cat $WERCKER_ROOT/kubernetes/deployment/deployment.yaml
             echo "Docker image and tag:"
             echo "${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}"
             
