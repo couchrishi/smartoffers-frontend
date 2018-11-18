@@ -33,4 +33,4 @@ spec:
         - /nginx-ingress-controller
         - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
         - --nginx-configmap=$(POD_NAMESPACE)/nginx-load-balancer-conf
-        - --healthz-port=10253
+        #- --healthz-port=10253
